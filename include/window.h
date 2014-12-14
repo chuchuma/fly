@@ -1,0 +1,2 @@
+void windowInit();
+void windowMainLoop();

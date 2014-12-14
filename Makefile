@@ -1,12 +1,13 @@
 SHELL=/bin/bash
 CC=gcc
 CPP=g++
-CFLAGS=-O3 -fdiagnostics-color=auto -pthread -std=gnu11
+CFLAGS=-O3 -fdiagnostics-color=auto -pthread -std=gnu11 -g
 CXXFLAGS=$(filter-out -std=gnu11, $(CFLAGS)) -std=gnu++11 -fno-exceptions -Wno-write-strings
 MKDIRS=lib bin tst/bin .pass .pass/tst/bin .make .make/bin .make/tst/bin
 INCLUDE=$(addprefix -I,include)
-EXECS=$(addprefix bin/,)
+EXECS=$(addprefix bin/,fly)
 TESTS=$(addprefix tst/bin/,)
+LINK=$(addprefix -l, glfw3) $(addprefix -framework ,OpenGL)
 
 .PHONY: default all clean again check distcheck dist-check
 .SECONDARY:
@@ -44,9 +45,9 @@ $(MKDIRS):
 	@mkdir -p $@
 $(EXECS): | bin
 bin/%: %.cpp
-	$(CPP) $(CXXFLAGS) $(INCLUDE) $^ -o $@
+	$(CPP) $(CXXFLAGS) $(INCLUDE) $^ -o $@ $(LINK)
 bin/%: %.c
-	$(CC) $(CFLAGS) $(INCLUDE) $^ -o $@
+	$(CC) $(CFLAGS) $(INCLUDE) $^ -o $@ $(LINK)
 lib/%.o: src/%.cpp include/%.h | lib
 	$(CPP) -c $(CXXFLAGS) $(INCLUDE) $< -o $@
 lib/%.o: src/%.c include/%.h | lib
