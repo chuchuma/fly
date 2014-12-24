@@ -1,13 +1,13 @@
 SHELL=/bin/bash
 CC=gcc
 CPP=g++
-CFLAGS=-O3 -fdiagnostics-color=auto -pthread -std=gnu11 -g
-CXXFLAGS=$(filter-out -std=gnu11, $(CFLAGS)) -std=gnu++11 -fno-exceptions -Wno-write-strings
+CFLAGS=-O0 -fdiagnostics-color=auto -pthread -std=gnu11 -g
+CXXFLAGS=$(filter-out -std=gnu11, $(CFLAGS)) -std=gnu++11 -fno-exceptions -Wno-write-strings -Wno-pointer-arith -fpermissive
 MKDIRS=lib bin tst/bin .pass .pass/tst/bin .make .make/bin .make/tst/bin
 INCLUDE=$(addprefix -I,include)
 EXECS=$(addprefix bin/,fly)
-TESTS=$(addprefix tst/bin/,)
-LINK=$(addprefix -l, glfw3) $(addprefix -framework ,OpenGL)
+TESTS=$(addprefix tst/bin/,capitalC)
+LINK=$(addprefix -l, glfw3 assimp GLEW) $(addprefix -framework ,OpenGL)
 
 .PHONY: default all clean again check distcheck dist-check
 .SECONDARY:
@@ -26,11 +26,15 @@ FNM=\([a-z_A-Z]*\)
 	@mkdir -p $(@D)
 	$(CPP) -MM $(INCLUDE) $< -o $@
 .make/bin/%.d: .make/%.d | .make/bin
-	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	@sed -i 's/$(FNM).o:/bin\/\1:/g' $@
+	sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
+	sed -i -e 's/$(FNM).o:/bin\/\1:/g' '$@'
+	perl make/depend.pl $@ > $@.bak
+	mv $@.bak $@
 .make/tst/bin/%.d: .make/tst/%.d | .make/tst/bin
-	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	@sed -i 's/$(FNM).o:/tst\/bin\/\1:/g' $@
+	sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
+	sed -i -e 's/$(FNM).o:/tst\/bin\/\1:/g' '$@'
+	perl make/depend.pl $@ > $@.bak
+	mv $@.bak $@
 MAKES=$(addsuffix .d,$(addprefix .make/, $(EXECS) $(TESTS)))
 -include $(MAKES)
 distcheck dist-check:
@@ -52,7 +56,7 @@ lib/%.o: src/%.cpp include/%.h | lib
 	$(CPP) -c $(CXXFLAGS) $(INCLUDE) $< -o $@
 lib/%.o: src/%.c include/%.h | lib
 	$(CC) -c $(CFLAGS) $(INCLUDE) $< -o $@
-tst/bin/%: tst/%.cpp lib/%.o | tst/bin
+tst/bin/%: tst/%.cpp | tst/bin
 	$(CPP) $(CXXFLAGS) $(INCLUDE) $^ -o $@
-tst/bin/%: tst/%.c lib/%.o | tst/bin
+tst/bin/%: tst/%.c | tst/bin
 	$(CC) $(CFLAGS) $(INCLUDE) $^ -o $@

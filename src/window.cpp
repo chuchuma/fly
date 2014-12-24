@@ -1,10 +1,16 @@
+#define GLEW_STATIC
+#include <GL/glew.h>
+
+#include <GLFW/glfw3.h>
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include <stdlib.h>
 #include <stdio.h>
-#include "window.h"
-#include "display.h"
 
-#define GLFW_INCLUDE_GLU
-#include <GLFW/glfw3.h>
+#include "window.h"
 
 #ifndef NULL
 #define NULL (0)
@@ -13,24 +19,30 @@
 static GLFWwindow* window;
 
 void windowInit() {
-	glfwInit();
-	window = glfwCreateWindow(500, 500, "Fly", NULL, NULL);
-	if (!window) {
-		glfwTerminate();
-		puts("HI");
-		exit(EXIT_FAILURE);
-	}
-	glfwMakeContextCurrent(window);
-	displayMode();
+    glfwInit();
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    
+    window = glfwCreateWindow(500, 500, "Fly", NULL, NULL);
+    if (!window) {
+        glfwTerminate();
+        exit(EXIT_FAILURE);
+    }
+    glfwMakeContextCurrent(window);
+    glewExperimental = GL_TRUE;
+    glewInit();
+    displayMode();
 }
 
 void windowMainLoop() {
-	while (!glfwWindowShouldClose(window)) {
-		displayFunc(window);
-		glfwSwapBuffers(window);	
-		glfwPollEvents();
-	}
-	glfwDestroyWindow(window);
-	glfwTerminate();
-	exit(EXIT_SUCCESS);
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+        displayFunc(window);
+        glfwSwapBuffers(window);	
+    }
+    glfwDestroyWindow(window);
+    glfwTerminate();
+    exit(EXIT_SUCCESS);
 }
