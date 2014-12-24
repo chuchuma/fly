@@ -7,7 +7,13 @@ MKDIRS=lib bin tst/bin .pass .pass/tst/bin .make .make/bin .make/tst/bin
 INCLUDE=$(addprefix -I,include)
 EXECS=$(addprefix bin/,fly)
 TESTS=$(addprefix tst/bin/,capitalC)
-LINK=$(addprefix -l, glfw3 assimp GLEW) $(addprefix -framework ,OpenGL)
+OS=$(shell uname)
+ifeq ($(OS), Darwin)
+GL=$(addprefix -framework ,OpenGL) $(addprefix -l, glfw3)
+else
+GL=$(addprefix -l, GL glfw)
+endif
+LINK=$(addprefix -l, assimp GLEW) $(GL)
 
 .PHONY: default all clean again check distcheck dist-check
 .SECONDARY:
