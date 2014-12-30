@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 
-#include "mesh.h"
 #include "models.h"
 #include "shaders.h"
 
