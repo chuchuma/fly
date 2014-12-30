@@ -1,7 +1,9 @@
 #include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 enum model_t {
-	TEST
+	SUIT
 };
 bool ensureModel(model_t);
-const aiScene* getScene(model_t);
+void drawModel(model_t);

@@ -30,8 +30,6 @@ bool ensureShaders(vertex_shader_t vs, fragment_shader_t frag) {
     fragCode[fragSize] = '\0';
     Close(vsFd);
     Close(fragFd);
-    puts(vsCode);
-    puts(fragCode);
     //Compile Shaders
     GLuint vertex, fragment;
     GLint success;

@@ -13,7 +13,7 @@ GL=$(addprefix -framework ,OpenGL) $(addprefix -l, glfw3)
 else
 GL=$(addprefix -l, GL glfw)
 endif
-LINK=$(addprefix -l, assimp GLEW) $(GL)
+LINK=$(addprefix -l, assimp GLEW SOIL) $(GL)
 
 .PHONY: default all clean again check distcheck dist-check
 .SECONDARY:

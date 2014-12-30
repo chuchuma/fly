@@ -1,14 +1,12 @@
+#include <stdlib.h>
+#include <stdio.h>
+
 #define GLEW_STATIC
 #include <GL/glew.h>
-
 #include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <stdlib.h>
-#include <stdio.h>
 
 #include "window.h"
 
@@ -33,6 +31,7 @@ void windowInit() {
     glfwMakeContextCurrent(window);
     glewExperimental = GL_TRUE;
     glewInit();
+    glEnable(GL_DEPTH_TEST);
     displayMode();
 }
 
