@@ -32,7 +32,7 @@ void windowInit() {
     glewExperimental = GL_TRUE;
     glewInit();
     glEnable(GL_DEPTH_TEST);
-    displayMode();
+    displayMode(window);
 }
 
 void windowMainLoop() {

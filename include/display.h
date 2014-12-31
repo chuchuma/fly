@@ -3,6 +3,8 @@
 
 #include <GLFW/glfw3.h>
 
-void displayMode();
+#include "camera.h"
+
+void displayMode(GLFWwindow* window);
 void errorCallback(int error, const char* description);
 void displayFunc(GLFWwindow* window);
