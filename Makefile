@@ -6,7 +6,7 @@ CXXFLAGS=$(filter-out -std=gnu11, $(CFLAGS)) -std=gnu++11 -fno-exceptions -Wno-w
 MKDIRS=lib bin tst/bin .pass .pass/tst/bin .make .make/bin .make/tst/bin
 INCLUDE=$(addprefix -I,include)
 EXECS=$(addprefix bin/,fly)
-TESTS=$(addprefix tst/bin/,capitalC)
+TESTS=$(addprefix tst/bin/,capitalC camera)
 OS=$(shell uname)
 ifeq ($(OS), Darwin)
 GL=$(addprefix -framework ,OpenGL) $(addprefix -l, glfw3)
