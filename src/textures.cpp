@@ -8,7 +8,8 @@ using std::map;
 
 map<const char*, Texture> textures;
 Texture getTexture(const char* path, string directory, string typeName) {
-    const char* filename = (directory + '/' + string(path)).c_str();
+    string file = directory + '/' + string(path);
+    const char* filename = file.c_str();
     if (textures.find(filename) != textures.end()) {
         return textures[filename];
     }

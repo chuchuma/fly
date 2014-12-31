@@ -5,7 +5,8 @@
 #include "mesh.h"
 
 enum model_t {
-	SUIT
+	SUIT,
+    ROCK
 };
 bool ensureModel(model_t);
 void drawModel(model_t);

@@ -21,6 +21,7 @@ static GLdouble lastTime;
 void displayMode(GLFWwindow* window) {
 	glfwSetErrorCallback(errorCallback);
     ensureShaders(TEST_VS, TEST_FRAG);
+    ensureModel(ROCK);
     ensureModel(SUIT);
     glfwSetKeyCallback(window, keyFunc);
 
@@ -49,7 +50,7 @@ void errorCallback(int error, const char* description) {
     fputs(description, stderr);
 }
 void displayFunc(GLFWwindow* window) {
-    glClearColor(0.05, 0.05, 0.05, 1.0);
+    glClearColor(0.5, 0.5, 0.5, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
@@ -58,14 +59,20 @@ void displayFunc(GLFWwindow* window) {
 
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
     glm::mat4 model;
     model = glm::translate(model, glm::vec3(0.0, -1.75, 0.0));
     model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    drawModel(SUIT);
+
+    model = glm::mat4();
+    model = glm::scale(model, glm::vec3(0.3, 0.3, 0.3));
+    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+    drawModel(ROCK);
 
     GLdouble currentTime = glfwGetTime();
     GLdouble diffTime = currentTime - lastTime;
     camera->processTime(window, diffTime);
     lastTime = currentTime;
-    drawModel(SUIT);
 }

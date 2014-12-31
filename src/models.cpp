@@ -10,8 +10,9 @@ using std::map;
 using std::string;
 using std::vector;
 
-char const *const model_paths[1] = {
-	"assets/test_model/nanosuit.obj"
+char const *const model_paths[2] = {
+	"assets/test_model/nanosuit.obj",
+    "assets/rock/Rock1.obj"
 };
 map<model_t, vector<Mesh> > models;
 static string directory;
