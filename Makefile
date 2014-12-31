@@ -14,6 +14,8 @@ else
 GL=$(addprefix -l, GL glfw)
 endif
 LINK=$(addprefix -l, assimp GLEW SOIL) $(GL)
+SRC=$(wildcard src/*.cpp)
+LIBS=$(patsubst src/%.cpp, lib/%.o, $(SRC))
 
 .PHONY: default all clean again check distcheck dist-check
 .SECONDARY:
@@ -27,21 +29,23 @@ check: $(addprefix .pass/,$(TESTS))
 FNM=\([a-z_A-Z]*\)
 .make/%.d: %.c
 	@mkdir -p $(@D)
-	@$(CC) -MM $(INCLUDE) $< -o $@
+	@$(CC) -MM $(CCSTD) $(INCLUDE) $< -o $@
 .make/%.d: %.cpp
 	@mkdir -p $(@D)
-	$(CPP) -MM $(INCLUDE) $< -o $@
+	$(CPP) -MM $(CXXSTD) $(INCLUDE) $< -o $@
+.make/lib/%.o.d: .make/src/%.d | .make/lib
+	@sed 's/$(FNM)\.o/lib\/\1.o/g' $< > $@
 .make/bin/%.d: .make/%.d | .make/bin
-	sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	sed -i -e 's/$(FNM).o:/bin\/\1:/g' '$@'
-	perl make/depend.pl $@ > $@.bak
-	mv $@.bak $@
+	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
+	@sed -i 's/$(FNM).o:/bin\/\1:/g' $@
+	@perl make/depend.pl $@ > $@.bak
+	@mv $@.bak $@
 .make/tst/bin/%.d: .make/tst/%.d | .make/tst/bin
-	sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	sed -i -e 's/$(FNM).o:/tst\/bin\/\1:/g' '$@'
-	perl make/depend.pl $@ > $@.bak
-	mv $@.bak $@
-MAKES=$(addsuffix .d,$(addprefix .make/, $(EXECS) $(TESTS)))
+	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
+	@sed -i 's/$(FNM).o:/tst\/bin\/\1:/g' $@
+	@perl make/depend.pl $@ > $@.bak
+	@mv $@.bak $@
+MAKES=$(addsuffix .d,$(addprefix .make/, $(EXECS) $(TESTS) $(LIBS)))
 -include $(MAKES)
 distcheck dist-check:
 	@rm -rf .pass
