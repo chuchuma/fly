@@ -9,11 +9,13 @@ EXECS=$(addprefix bin/,fly)
 TESTS=$(addprefix tst/bin/,capitalC camera)
 OS=$(shell uname)
 ifeq ($(OS), Darwin)
-GL=$(addprefix -framework ,OpenGL) $(addprefix -l, glfw3)
-INCLUDE=$(PINCLUDE)
+GL=$(addprefix -framework ,OpenGL) $(addprefix -l, glfw3 ovr)
+INCLUDE=$(PINCLUDE) $(addprefix -I,/Users/chuchu/Development/OculusSDK/LibOVR/Src)
+ISED=sed -i .sed
 else
 GL=$(addprefix -l, GL glfw OculusVR)
 INCLUDE=$(PINCLUDE) $(addprefix -I,/usr/include/ovr-0.4.4/LibOVR/Src)
+ISED=sed -i
 endif
 LINK=$(addprefix -l, assimp GLEW SOIL) $(GL)
 SRC=$(wildcard src/*.cpp)
@@ -39,12 +41,12 @@ FNM=\([a-z_A-Z]*\)
 	@sed 's/$(FNM)\.o/lib\/\1.o/g' $< > $@
 .make/bin/%.d: .make/%.d | .make/bin
 	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	@sed -i 's/$(FNM).o:/bin\/\1:/g' $@
+	@$(ISED) 's/$(FNM).o:/bin\/\1:/g' $@
 	@perl make/depend.pl $@ > $@.bak
 	@mv $@.bak $@
 .make/tst/bin/%.d: .make/tst/%.d | .make/tst/bin
 	@sed 's/include\/$(FNM).h/lib\/\1.o/g' $< > $@
-	@sed -i 's/$(FNM).o:/tst\/bin\/\1:/g' $@
+	@$(ISED) 's/$(FNM).o:/tst\/bin\/\1:/g' $@
 	@perl make/depend.pl $@ > $@.bak
 	@mv $@.bak $@
 MAKES=$(addsuffix .d,$(addprefix .make/, $(EXECS) $(TESTS) $(LIBS)))
